@@ -1,0 +1,10 @@
+pandas
+matplotlib
+seaborn
+scikit-learn
+scipy
+nltk
+transformers
+snscrape
+tradingview-ta
+alpha_vantage
