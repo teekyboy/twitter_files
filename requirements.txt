@@ -12,3 +12,4 @@ vaderSentiment
 emot
 emoji
 tweet-preprocessor
+tensorflow
