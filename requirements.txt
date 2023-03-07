@@ -8,3 +8,4 @@ transformers
 snscrape
 tradingview-ta
 alpha_vantage
+tensorflow
