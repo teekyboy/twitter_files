@@ -9,3 +9,4 @@ snscrape
 alpha_vantage
 emoji
 tensorflow
+torch
