@@ -6,10 +6,6 @@ scipy
 nltk
 transformers
 snscrape
-tradingview-ta
 alpha_vantage
-vaderSentiment
-emot
 emoji
-tweet-preprocessor
 tensorflow
