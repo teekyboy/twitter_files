@@ -1,85 +1,98 @@
 import streamlit as st
-
-import numpy as np
 import pandas as pd
 
-
 user_info = {
-
-    "avg_1m" : 0.05,
-    "avg_1h" : 0.4,
-    "avg_1d" : 0.7,
-    "avg_1w" : 0.3,
-    "user_rank_1m" : 6,
-    "user_rank_1h" : 7,
-    "user_rank_1d" : 5,
-    "user_rank_1w" : 4
+    "1 minute": {
+        "avg": 0.05,
+        "rank": 6
+    },
+    "1 hour": {
+        "avg": 0.4,
+        "rank": 7
+    },
+    "1 day": {
+        "avg": 0.7,
+        "rank": 5
+    },
+    "1 week": {
+        "avg": 0.3,
+        "rank": 4
+    }
 }
-better_users_1m = {"user1": 0.45,
-"user2": 0.3,
-"user3": 0.1}
 
-better_users_1h = {"user1": 0.45,
-"user2": 0.3,
-"user3": 0.1}
+better_users = {
+    "1 minute": {
+        "user1": 0.45,
+        "user2": 0.3,
+        "user3": 0.1
+    },
+    "1 hour": {
+        "user1": 0.45,
+        "user2": 0.3,
+        "user3": 0.1
+    },
+    "1 day": {
+        "user1": 0.45,
+        "user2": 0.3,
+        "user3": 0.1
+    },
+    "1 week": {
+        "user1": 0.45,
+        "user2": 0.3
+    }
+}
 
-better_users_1d = {"user1": 0.45,
-"user2": 0.3,
-"user3": 0.1}
-
-better_users_1w = {"user1": 0.45,
-"user2": 0.3}
-
-#Create the User DataFrame:
-df = pd.DataFrame({
-"Profit": [user_info["avg_1m"], user_info["avg_1h"], user_info["avg_1d"], user_info["avg_1w"]],
-"Rank": [user_info["user_rank_1m"], user_info["user_rank_1h"], user_info["user_rank_1d"], user_info["user_rank_1w"]]
-}, index=["1_minute", "1_hour", "1_day", "1_week"])
-
-# Define the section title with center alignment
-st.markdown("<h1 style='text-align: center;'>User Info</h1>", unsafe_allow_html=True)
-
-
-
-# Define the section title with center alignment
-st.markdown("<h1 style='text-align: center;'>User Info</h1>", unsafe_allow_html=True)
-
+# Set page configuration
+st.set_page_config(layout="wide")
 
 # Define the section title with center alignment
 st.markdown("<h1 style='text-align: center;'>User Info</h1>", unsafe_allow_html=True)
 
-# Display the DataFrame with center alignment
-st.write(df.style.set_properties(**{'text-align': 'center', 'margin': 'auto'}))
+# Create the user info DataFrame
+df_user_info = pd.DataFrame(user_info).T
+df_user_info.index.name = "Time"
+df_user_info.columns = ["Average Profit", "Rank"]
+df_user_info.index = df_user_info.index.str.capitalize() # Capitalize the time index
 
+# Create the better users DataFrames
+dfs_better_users = {}
+for time, users in better_users.items():
+    dfs_better_users[time] = pd.DataFrame.from_dict(users, orient="index", columns=["Profit"])
+    dfs_better_users[time].index.name = "Twitter Handle"
+    dfs_better_users[time].sort_values(by="Profit", ascending=False, inplace=True)
+    dfs_better_users[time]["Rank"] = dfs_better_users[time]["Profit"].rank(ascending=False)
 
+# Define the section titles with center alignment
+col1_content = "<h3 style='text-align: center;'>Experts better at 1 Minute predictions</h3>"
+col2_content = "<h3 style='text-align: center;'>Experts better at 1 Hour predictions</h3>"
+col3_content = "<h3 style='text-align: center;'>Experts better at 1 Day predictions</h3>"
+col4_content = "<h3 style='text-align: center;'>Experts better at 1 Week predictions</h3>"
 
-
-#Display the DataFrame
-st.dataframe(df)
-
-#Create the DataFrames of the better users:
-df_better_1m = pd.DataFrame(list(better_users_1m.items()), columns=["User Name", "Profit"], index=pd.RangeIndex(start=1, stop=len(better_users_1m)+1, name="Rank"))
-df_better_1h = pd.DataFrame(list(better_users_1h.items()), columns=["User Name", "Profit"], index=pd.RangeIndex(start=1, stop=len(better_users_1h)+1, name="Rank"))
-df_better_1d = pd.DataFrame(list(better_users_1d.items()), columns=["User Name", "Profit"], index=pd.RangeIndex(start=1, stop=len(better_users_1d)+1, name="Rank"))
-df_better_1w = pd.DataFrame(list(better_users_1w.items()), columns=["User Name", "Profit"], index=pd.RangeIndex(start=1, stop=len(better_users_1w)+1, name="Rank"))
-
-col1_content = "### Better 1 min users"
-col2_content = "### Better 1 hour users"
-col3_content = "### Better 1 day users"
-col4_content = "### Better 1 week users"
-
-#Create the columns using beta_columns function
+# Create the columns using beta_columns function
 col1, col2, col3, col4 = st.columns(4)
 
-#Add the content to each column
-col1.write(col1_content)
-col1.dataframe(df_better_1m)
+# Set the width of the columns
+col1_width = 400
+col2_width = 400
+col3_width = 400
+col4_width = 400
 
-col2.write(col2_content)
-col2.dataframe(df_better_1h)
+# Add the content to each column
+with col1:
+    st.markdown(col1_content, unsafe_allow_html=True)
+    st.write(dfs_better_users["1 minute"].head(10))
 
-col3.write(col3_content)
-col3.dataframe(df_better_1d)
+with col2:
+    st.markdown(col2_content, unsafe_allow_html=True)
+    st.write(dfs_better_users["1 hour"].head(10))
 
-col4.write(col4_content)
-col4.dataframe(df_better_1w)
+with col3:
+    st.markdown(col3_content, unsafe_allow_html=True)
+    st.write(dfs_better_users["1 day"].head(10))
+
+with col4:
+    st.markdown(col4_content, unsafe_allow_html=True)
+    st.write(dfs_better_users["1 week"].head(10))
+
+# Display the user info DataFrame with center alignment
+st.write(df_user_info.style.set_properties(**{'text-align': 'center', 'margin': 'auto'}).set_table_styles([{'selector': 'th', 'props': [('max-width', '50px')]}]).set_properties(**{'width': '250px', 'min-width': '150px', 'max-width': '500px'}))
